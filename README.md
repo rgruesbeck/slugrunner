@@ -1,6 +1,7 @@
-# Slug Runner
+# Garden Dash
 ![Game Artwork](https://i.imgur.com/jcBe9Ef.png)
 
+An infinite runner in a sunny garden. Based off the HTML5 Canvas Game Scaffold.
 A perfect beginner template for new game makers. Jump right into the "index.js" file and begin editing your game settings.
 
 ## Features: 
