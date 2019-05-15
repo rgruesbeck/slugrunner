@@ -7,9 +7,7 @@
     "skyImage": "https://i.imgur.com/j4hRIfU.png",
     "horizonImageA": "https://i.imgur.com/L09HXrn.png",
     "horizonImageB": "https://i.imgur.com/EnY8y6j.png",
-    "floorImageA": "https://i.imgur.com/8YrMOQP.png",
-    "floorImageB": "https://i.imgur.com/foWzGDQ.png",
-    "backgroundImage": "https://i.imgur.com/Aqoh8DO.png"
+    "floorImage": "https://i.imgur.com/8YrMOQP.png"
   },
   "@@editor": [
     {
@@ -25,15 +23,45 @@
           "type": "image"
         },
         {
+          "key": "obstacleImage",
+          "name": "Obstacle Image",
+          "description": "Obstacle image",
+          "type": "image"
+        },
+        {
+          "key": "tokenImageA",
+          "name": "Token Image A",
+          "description": "Token image",
+          "type": "image"
+        },
+        {
+          "key": "tokenImageB",
+          "name": "Token Image B",
+          "description": "Token image",
+          "type": "image"
+        },
+        {
           "key": "skyImage",
           "name": "Sky Image",
           "description": "Sky image",
           "type": "image"
         },
         {
-          "key": "backgroundImage",
-          "name": "Background Image",
-          "description": "Background image",
+          "key": "horizonImageA",
+          "name": "Horizon Image A",
+          "description": "Horizon image",
+          "type": "image"
+        },
+        {
+          "key": "horizonImageB",
+          "name": "Horizon Image B",
+          "description": "Horizon image",
+          "type": "image"
+        },
+        {
+          "key": "floorImage",
+          "name": "Floor Image",
+          "description": "Floor image",
           "type": "image"
         }
       ]

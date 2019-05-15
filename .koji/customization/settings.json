@@ -3,8 +3,8 @@
       "name": "Game",
       "startText": "Start",
       "gameoverText": "Game Over",
-      "instructionsMobile": "Swipe in direction character should move",
-      "instructionsDesktop": "Use arrow keys to move: [ ⇠ ⇢ ] [ ⇡ ⇣ ]",
+      "instructionsMobile": "Tap screen to jump",
+      "instructionsDesktop": "Press SPACE bar to jump",
       "gameTopBar": true,
       "lives": 3,
       "fontFamily": "Bungee Inline"

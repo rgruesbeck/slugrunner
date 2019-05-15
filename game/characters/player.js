@@ -10,6 +10,10 @@
  *   eg. eat
  * 
  */
+import {
+    drainFrom,
+    drainTo
+} from '../utils/baseUtils.js';
 
 import ImageSprite from '../objects/imageSprite.js';
 
@@ -31,14 +35,20 @@ class Player extends ImageSprite {
         let dx = 0;
         let dy = 0;
 
+        // force is -y (up)
         if (this.force.y < 0) {
-            this.force.y += 1;
-            dy = -1;
+            let upForce = drainTo(1 * m, this.force.y, 0);
+
+            dy = dy - upForce.flow;
+            this.setForce(0, upForce.stock);
         }
 
+        // force is y (down)
         if (this.force.y > 0) {
-            this.force.y -= 1;
-            dy = +1;
+            let downForce = drainFrom(1 * m, this.force.y, 0);
+
+            dy = dy + downForce.flow;
+            this.setForce(0, downForce.stock);
         }
 
         super.move(x + dx, y + dy, m);
@@ -58,6 +68,13 @@ class Player extends ImageSprite {
     }
 
     setForce(x, y) {
+        this.force = {
+            x: x,
+            y: y
+        }
+    }
+
+    addForce(x, y) {
         this.force = {
             x: this.force.x + x,
             y: this.force.y + y

@@ -22,7 +22,7 @@ import {
 import ImageSprite from '../objects/imageSprite.js';
 
 class Background {
-    constructor({ ctx, screen, x, y, width, height, skyImage, horizonImageA, horizonImageB, floorImageA, floorImageB }) {
+    constructor({ ctx, screen, x, y, width, height, skyImage, horizonImageA, horizonImageB, floorImage }) {
         this.ctx = ctx;
 
         this.x = x;
@@ -37,134 +37,168 @@ class Background {
         this.skyImage = skyImage;
         this.horizonImageA = horizonImageA;
         this.horizonImageB = horizonImageB;
-        this.floorImageA = floorImageA;
-        this.floorImageB = floorImageB;
+        this.floorImage = floorImage;
 
-        this.images = [];
+        this.images = this.freshScene();
+    }
+
+    freshScene() {
+        // populate start screen with scene
+        return [
+            this.createHorizonImageB(false),
+            this.createHorizonImageB(false),
+            this.createHorizonImageB(false),
+            this.createSkyImage(false),
+            this.createSkyImage(false),
+            this.createSkyImage(false),
+            this.createSkyImage(false),
+            this.createHorizonImageA(false),
+            this.createHorizonImageA(false),
+            this.createHorizonImageA(false),
+            this.createHorizonImageA(false)
+        ]
+    }
+
+    createSkyImage(spawned = true) {
+        // get location somewhere offscreen in x
+        // from top to middle of screen
+        let spawnLocation = pickLocation({
+            top: this.screen.top,
+            right: this.screen.right,
+            bottom: this.screen.centerY,
+            left: spawned ? this.screen.right : this.screen.left
+        });
+
+        let depth = randomBetween(4, 8, 'int');
+        let width = 250 * (this.screen.scale / depth);
+        let height = 150 * (this.screen.scale / depth);
+        return new ImageSprite({
+            ctx: this.ctx,
+            image: this.skyImage,
+            x: spawnLocation.x,
+            y: spawnLocation.y,
+            width: width,
+            height: height,
+            speed: this.speed / depth,
+            bounds: padBounds(this.screen)
+        });
+    }
+
+    createHorizonImageA(spawned = true) {
+        // get location somewhere offscreen in x
+        // from top to middle of screen
+        let depth = randomBetween(2, 3, 'int');
+        let width = 650 * (this.screen.scale / depth);
+        let height = 650 * (this.screen.scale / depth);
+
+        let spawnLocation = pickLocation({
+            top: this.screen.bottom - height,
+            right: spawned ? this.screen.right : this.screen.right - width / 2,
+            bottom: this.screen.bottom - height,
+            left: spawned ? this.screen.right : this.screen.left - width / 2
+        });
+
+        return new ImageSprite({
+            ctx: this.ctx,
+            image: this.horizonImageA,
+            x: spawnLocation.x,
+            y: spawnLocation.y,
+            width: width,
+            height: height,
+            speed: this.speed / depth,
+            bounds: padBounds(this.screen)
+        })
+    }
+
+    createHorizonImageB(spawned = true) {
+        // get location somewhere offscreen in x
+        // from top to middle of screen
+        let depth = randomBetween(6, 7, 'int');
+        let width = 4600 * (this.screen.scale / depth);
+        let height = 3200 * (this.screen.scale / depth);
+
+        let spawnLocation = pickLocation({
+            top: this.screen.bottom - height,
+            right: this.screen.right,
+            bottom: this.screen.bottom - height,
+            left: spawned ? this.screen.right : this.screen.left - width / 2
+        });
+
+        return new ImageSprite({
+            ctx: this.ctx,
+            image: this.horizonImageB,
+            x: spawnLocation.x,
+            y: spawnLocation.y,
+            width: width,
+            height: height,
+            speed: this.speed / depth,
+            bounds: padBounds(this.screen)
+        })
+    }
+
+    createFloorImage(spawned = true) {
+        // get location somewhere offscreen in x
+        // from top to middle of screen
+        let depth = randomBetween(2, 3, 'int');
+        console.log(depth);
+        let width = 150 * (this.screen.scale / depth);
+        let height = 90 * (this.screen.scale / depth);
+
+        let spawnLocation = pickLocation({
+            top: this.screen.bottom - height,
+            right: this.screen.right,
+            bottom: this.screen.bottom - height,
+            left: spawned ? this.screen.right : this.screen.left
+        });
+
+        return new ImageSprite({
+            ctx: this.ctx,
+            image: this.floorImage,
+            x: spawnLocation.x,
+            y: spawnLocation.y,
+            width: width,
+            height: height,
+            speed: this.speed / depth,
+            bounds: padBounds(this.screen)
+        })
     }
 
     update(frame) {
         // every 2 seconds add a sky image (cloud, bird, etc)
         if (frame.count % 120 === 0) {
-            // get location somewhere offscreen in x
-            // from top to middle of screen
-            let spawnLocation = pickLocation({
-                top: this.screen.top,
-                right: this.screen.right,
-                bottom: this.screen.centerY,
-                left: this.screen.right
-            });
 
-            let depth = randomBetween(1, 4, 'int');
-            let width = 90 * (this.screen.scale / depth);
-            let height = 60 * (this.screen.scale / depth);
-
-            // add a new image
+            // add a new cloud/ sky image
             this.images = [
                 ...this.images,
-                new ImageSprite({
-                    ctx: this.ctx,
-                    image: this.skyImage,
-                    x: spawnLocation.x,
-                    y: spawnLocation.y,
-                    width: width,
-                    height: height,
-                    speed: this.speed / depth,
-                    bounds: padBounds(this.screen)
-                })
+                this.createSkyImage()
             ]
         }
 
         // trees
         if (frame.count % 60 === 0) {
-            // get location somewhere offscreen in x
-            // from top to middle of screen
-            let depth = randomBetween(2, 4, 'int');
-            let width = 650 * (this.screen.scale / depth);
-            let height = 650 * (this.screen.scale / depth);
 
-            let spawnLocation = pickLocation({
-                top: this.screen.bottom - height,
-                right: this.screen.right,
-                bottom: this.screen.bottom - height,
-                left: this.screen.right
-            });
-
-            // add a new tree
+            // add a new tree/horizon image a
             this.images = [
                 ...this.images,
-                new ImageSprite({
-                    ctx: this.ctx,
-                    image: this.horizonImageA,
-                    x: spawnLocation.x,
-                    y: spawnLocation.y,
-                    width: width,
-                    height: height,
-                    speed: this.speed / depth,
-                    bounds: padBounds(this.screen)
-                })
+                this.createHorizonImageA()
             ]
         }
 
         // bushes
         if (frame.count % 60 === 0) {
-            // get location somewhere offscreen in x
-            // from top to middle of screen
-            let depth = randomBetween(2, 4, 'int');
-            let width = 150 * (this.screen.scale / depth);
-            let height = 90 * (this.screen.scale / depth);
-
-            let spawnLocation = pickLocation({
-                top: this.screen.bottom - height,
-                right: this.screen.right,
-                bottom: this.screen.bottom - height,
-                left: this.screen.right
-            });
-
             // add a new bush
             this.images = [
                 ...this.images,
-                new ImageSprite({
-                    ctx: this.ctx,
-                    image: this.floorImageA,
-                    x: spawnLocation.x,
-                    y: spawnLocation.y,
-                    width: width,
-                    height: height,
-                    speed: this.speed / depth,
-                    bounds: padBounds(this.screen)
-                })
+                this.createFloorImage()
             ]
         }
 
         // mountains
         if (frame.count % 800 === 0) {
-            // get location somewhere offscreen in x
-            // from top to middle of screen
-            let depth = 5;
-            let width = 3500 * (this.screen.scale / depth);
-            let height = 2500 * (this.screen.scale / depth);
-
-            let spawnLocation = pickLocation({
-                top: this.screen.bottom - height,
-                right: this.screen.right,
-                bottom: this.screen.bottom - height,
-                left: this.screen.right
-            });
-
             // add a new mountain
             this.images = [
                 ...this.images,
-                new ImageSprite({
-                    ctx: this.ctx,
-                    image: this.horizonImageB,
-                    x: spawnLocation.x,
-                    y: spawnLocation.y,
-                    width: width,
-                    height: height,
-                    speed: this.speed / depth,
-                    bounds: padBounds(this.screen)
-                })
+                this.createHorizonImageB()
             ]
         }
 
@@ -173,6 +207,7 @@ class Background {
         // update positions right to left
         this.images = [
             ...this.images
+            .sort((a, b) => a.depth - b.depth)
             .map(img => {
 
                 // move image right to left
@@ -185,16 +220,13 @@ class Background {
                 img.x > -img.width :
                 true;
             })
-            .sort((a, b) => a.depth + b.depth)
         ]
-
-        // update paralax
-
     }
 
     draw() {
         // draw each image
-        this.images.forEach(img => img && img.draw())
+        this.images
+        .forEach(img => img && img.draw())
     }
 }
 

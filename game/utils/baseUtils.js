@@ -33,18 +33,85 @@
 const randomBetween = (min, max, type) => {
     const rand = Math.random() * (max - min) + min;
 
-    if (type && type === 'int') {
-        return parseInt(rand);
+    if (type === 'int') {
+        return Math.round(rand);
     }
 
     return rand;
+}
+
+// take from until limit
+// return flow and new stock value
+const drainFrom = (flow, stock, limit) => {
+    // stock is at limit no flow possible
+    if (stock <= limit) {
+        return {
+            stock: stock,
+            flow: 0
+        }
+    }
+
+    // get new stock
+    let newStock = stock - flow;
+
+    if (newStock > limit) {
+        // there was enough stock to handle requested flow
+        // return new stock and flow
+
+        return {
+            stock: newStock,
+            flow: flow
+        };
+
+    } else {
+        // there was NOT enough stock to handle requested flow
+        // return limit as new stock and reduced flow
+
+        return {
+            stock: limit,
+            flow: stock
+        }
+    }
+}
+
+// add to until limit
+const drainTo = (flow, stock, limit) => {
+    // stock is at limit no flow possible
+    if (stock >= limit) {
+        return {
+            stock: stock,
+            flow: 0
+        }
+    }
+
+    // get new stock
+    let newStock = stock + flow;
+
+    if (newStock < limit) {
+        // there was enough stock to handle requested flow
+        // return new stock and flow
+
+        return {
+            stock: newStock,
+            flow: flow
+        };
+
+    } else {
+        // there was NOT enough stock to handle requested flow
+        // return limit as new stock and reduced flow
+
+        return {
+            stock: limit,
+            flow: stock
+        }
+    }
 }
 
 // pick random element from a list
 const pickFromList = (list) => {
     if (!Array.isArray(list) || list.length < 1) { return; }
 
-    let index = randomBetween(0, list.length, 'int');
+    let index = randomBetween(0, list.length - 1, 'int');
     return list[index];
 }
 
@@ -109,6 +176,8 @@ const throttled = (delay, fn) => {
 export {
     bounded,
     isBounded,
+    drainTo,
+    drainFrom,
     getCursorPosition,
     getDistance,
     hexToRgbA,

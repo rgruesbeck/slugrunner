@@ -102,11 +102,9 @@ class Game {
         document.addEventListener('keydown', ({ code }) => this.handleKeyboardInput('keydown', code));
         document.addEventListener('keyup', ({ code }) => this.handleKeyboardInput('keyup', code));
 
-        // setup event listeners for mouse movement
-        document.addEventListener('mousemove', ({ clientY }) => this.handleMouseMove(clientY));
-
-        // setup event listeners for mouse movement
-        document.addEventListener('touchmove', ({ touches }) => this.handleTouchMove(touches[0]));
+        // handle taps
+        document.addEventListener('touchstart', () => this.handleJump());
+        document.addEventListener('mousedown', () => this.handleJump());
 
         // handle overlay clicks
         this.overlay.root.addEventListener('click', ({ target }) => this.handleClicks(target));
@@ -147,7 +145,7 @@ class Game {
             centerY: this.canvas.height / 2,
             width: this.canvas.width,
             height: this.canvas.height,
-            scale: (this.canvas.height / 2) * 0.003
+            scale: (this.canvas.width) / 2  * 0.005
         };
 
         // set state
@@ -177,8 +175,7 @@ class Game {
             loadImage('skyImage', this.config.images.skyImage),
             loadImage('horizonImageA', this.config.images.horizonImageA),
             loadImage('horizonImageB', this.config.images.horizonImageB),
-            loadImage('floorImageA', this.config.images.floorImageA),
-            loadImage('floorImageB', this.config.images.floorImageB),
+            loadImage('floorImage', this.config.images.floorImage),
             loadImage('backgroundImage', this.config.images.backgroundImage),
             loadSound('backgroundMusic', this.config.sounds.backgroundMusic),
             loadSound('jumpSound', this.config.sounds.jumpSound),
@@ -230,8 +227,7 @@ class Game {
             skyImage: this.images.skyImage,
             horizonImageA: this.images.horizonImageA,
             horizonImageB: this.images.horizonImageB,
-            floorImageA: this.images.floorImageA,
-            floorImageB: this.images.floorImageB
+            floorImage: this.images.floorImage,
         })
 
         // set overlay styles
@@ -273,8 +269,12 @@ class Game {
             this.overlay.setMute(this.state.muted);
             this.overlay.setPause(this.state.paused);
 
-            // dev only
-            this.setState({ current: 'play' });
+            // player
+            let pulse = Math.cos(this.frame.count / 10) / 4;
+            this.player.animate(pulse * this.screen.scale);
+            this.player.move(0, 0, this.frame.scale);
+            this.player.addForce(0, 1);
+            this.player.draw();
         }
 
         // game play
@@ -351,11 +351,12 @@ class Game {
             let tokenWidth = 25 * this.screen.scale;
             let tokenHeight = 25 * this.screen.scale;
             let tokenLocation = pickLocationAwayFrom({
-                top: this.screen.bottom - tokenHeight * 2,
+                top: this.screen.bottom - tokenHeight * 6,
                 bottom: this.screen.bottom - tokenHeight,
                 right: this.screen.right,
                 left: this.screen.right
-            }, this.obstacles[this.obstacles.length - 1], this.player.width)
+            }, this.obstacles[this.obstacles.length - 1], tokenWidth)
+
             if (tokenTime && tokenLocation) {
                 let { tokenImageA, tokenImageB } = this.images;
                 let tokenA = { key: `token-A-${this.frame.count}`, value: 1, image: tokenImageA }
@@ -386,7 +387,7 @@ class Game {
             this.tokens = [
                 ...this.tokens
                 .filter(tkn => tkn.x > -tkn.width)
-                .filter(tkn => tkn.y > this.screen.bottom - this.player.height * 2)
+                .filter(tkn => tkn.y > this.player.y - this.player.height || !tkn.collected)
             ];
 
             this.tokens.forEach(tkn => {
@@ -416,19 +417,15 @@ class Game {
             // player
             let pulse = Math.cos(this.frame.count / 10) / 4;
             this.player.animate(pulse * this.screen.scale);
-
-            let dy = 0;
-            let dx = 0;
-
-            this.player.move(dx, dy, this.frame.scale);
-            this.player.setForce(0, 1);
+            this.player.move(0, 0, this.frame.scale);
+            this.player.addForce(0, 1);
             this.player.draw();
 
         }
 
         // game over
         if (this.state.current === 'over') {
-            this.overlay.setBanner('Game Over Message');
+            this.overlay.setBanner(this.config.settings.gameoverText);
 
             this.sounds.backgroundMusic.pause();
             this.sounds.gameOverSound.play();
@@ -442,9 +439,30 @@ class Game {
         }
     }
 
+    handleJump() {
+        // only when in play
+        if (this.state.current != 'play') {
+            return;
+        }
+        
+        // return if player already jumped
+        if (this.player.y < this.screen.bottom - this.player.height) {
+            return;
+        }
+
+        // jump
+        let jump = (this.player.height * 0.75 ) / this.screen.scale;
+        this.player.jump(jump);
+
+        // play jump sound
+        this.sounds.jumpSound.currentTime = 0;
+        this.sounds.jumpSound.play();
+    }
+
     // event listeners
     handleClicks(target) {
         if (this.state.current === 'loading') { return; }
+
         // mute
         if (target.id === 'mute') {
             this.mute();
@@ -456,7 +474,7 @@ class Game {
         }
 
         // button
-        if ( target.id === 'button') {
+        if (target.id === 'button') {
             this.setState({ current: 'play' });
 
             // if defaulting to have sound on by default
@@ -465,34 +483,41 @@ class Game {
             this.mute();
         }
 
+        // restart
+        if (this.state.current === 'over') {
+            this.load();
+        }
+
     }
 
     handleKeyboardInput(type, code) {
         this.input.active = 'keyboard';
 
         if (type === 'keydown') {
-            if (code === 'Space') {
-                this.player.jump(this.player.height * 0.40);
-                this.sounds.jumpSound.currentTime = 0;
-                this.sounds.jumpSound.play();
+
+            // spacebar when game in play: jump
+            if (code === 'Space' && this.state.current === 'play') {
+
+                // jump
+                this.handleJump();
             }
         }
 
         if (type === 'keyup') {
+            // spacebar when game over: restart
+            if (code === 'Space' && this.state.current === 'over') {
+
+                // restart
+                this.load();
+            }
+
+            // spacebar when game start: play
+            if (code === 'Space' && this.state.current === 'ready') {
+
+                // start play
+                this.setState({ current: 'play' });
+            }
         }
-    }
-
-    handleMouseMove(y) {
-        this.input.active = 'mouse';
-        this.input.mouse.y = y;
-    }
-
-    handleTouchMove(touch) {
-        let { clientX, clientY } = touch;
-
-        this.input.active = 'touch';
-        this.input.touch.x = clientX;
-        this.input.touch.y = clientY;
     }
 
     handleResize() {
