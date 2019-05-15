@@ -1,6 +1,6 @@
 ![Game Artwork](https://i.imgur.com/jcBe9Ef.png)
 
-# HTML5 Canvas Game Scaffold
+# Slug Runner
 
 A perfect beginner template for new game makers.
 
