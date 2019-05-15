@@ -1,4 +1,4 @@
-# HTML5 Canvas Game Scaffold
+# Slug Runner
 ![Game Artwork](https://i.imgur.com/jcBe9Ef.png)
 
 A perfect beginner template for new game makers. Jump right into the "index.js" file and begin editing your game settings.
@@ -31,10 +31,3 @@ A perfect beginner template for new game makers. Jump right into the "index.js" 
 ## Possibilities for Extension
 1. Levels
 2. Powerups
-
-https://imgur.com/a/ll8i0qy
-https://www.flaticon.com/free-icon/hill_862494
-https://www.flaticon.com/free-icon/bush_1497220
-https://www.flaticon.com/free-icon/hedgehog_1159090
-https://www.flaticon.com/free-icon/snail_809115
-https://www.flaticon.com/free-icon/ant_809140

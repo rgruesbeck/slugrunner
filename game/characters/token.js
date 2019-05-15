@@ -12,8 +12,6 @@
  */
 
 import {
-    randomBetween,
-    getDistance
 } from '../utils/baseUtils.js';
 
 import ImageSprite from '../objects/imageSprite.js';
@@ -28,10 +26,8 @@ class Token extends ImageSprite {
         this.collectedAt = Date.now();
 
         this.text = '';
-        this.color = 'orange';
-        //this.color = color;
-        // this.font = `bold ${fontSize}px ${font}`
-        this.font = `bold ${35}px Arial`
+        this.color = options.color;
+        this.font = `bold ${options.fontSize}px ${options.font}`
 
         this.value = options.value;
     }
@@ -41,7 +37,6 @@ class Token extends ImageSprite {
         if (this.collected) {
             this.ctx.save();
             this.ctx.font = this.font;
-            // this.ctx.fillStyle = hexToRgbA(this.color, this.alpha);
             this.ctx.fillStyle = this.color;
             this.ctx.fillText(this.text, this.x, this.y )
         } else {

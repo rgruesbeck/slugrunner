@@ -41,8 +41,6 @@ class Player extends ImageSprite {
             dy = +1;
         }
 
-
-        // console.log('force', this.force);
         super.move(x + dx, y + dy, m);
     }
 

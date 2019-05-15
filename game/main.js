@@ -181,6 +181,10 @@ class Game {
             loadImage('floorImageB', this.config.images.floorImageB),
             loadImage('backgroundImage', this.config.images.backgroundImage),
             loadSound('backgroundMusic', this.config.sounds.backgroundMusic),
+            loadSound('jumpSound', this.config.sounds.jumpSound),
+            loadSound('scoreSound', this.config.sounds.scoreSound),
+            loadSound('hitSound', this.config.sounds.hitSound),
+            loadSound('gameOverSound', this.config.sounds.gameOverSound),
             loadFont('gameFont', this.config.settings.fontFamily)
         ];
 
@@ -203,7 +207,7 @@ class Game {
 
 
         let playerHeight = 60 * scale;
-        let playerWidth = 70 * scale;
+        let playerWidth = 80 * scale;
 
         this.player = new Player({
             ctx: this.ctx,
@@ -294,10 +298,9 @@ class Game {
             // obstacles
             // every 2 seconds, add an obstacle if less than 3 on screen
             let check = pickFromList([120, 300]);
-            console.log(check, this.obstacles.length);
             if (this.frame.count % check ===  0 && this.obstacles.length < 3) {
                 let width = 45 * this.screen.scale;
-                let height = 45 * this.screen.scale;
+                let height = 35 * this.screen.scale;
 
                 this.obstacles = [
                     ...this.obstacles,
@@ -337,6 +340,8 @@ class Game {
                     this.setState({
                         lives: this.state.lives - 1
                     })
+
+                    this.sounds.hitSound.play();
                 }
             }
 
@@ -346,7 +351,7 @@ class Game {
             let tokenWidth = 25 * this.screen.scale;
             let tokenHeight = 25 * this.screen.scale;
             let tokenLocation = pickLocationAwayFrom({
-                top: this.screen.bottom - tokenHeight,
+                top: this.screen.bottom - tokenHeight * 2,
                 bottom: this.screen.bottom - tokenHeight,
                 right: this.screen.right,
                 left: this.screen.right
@@ -364,8 +369,11 @@ class Game {
                         key: token.key,
                         ctx: this.ctx,
                         image: token.image,
+                        color: this.config.colors.primaryColor,
+                        font: this.config.settings.fontFamily,
+                        fontSize: tokenWidth,
                         x: tokenLocation.x,
-                        y: tokenLocation.y - tokenHeight,
+                        y: tokenLocation.y,
                         width: tokenWidth,
                         height: tokenHeight,
                         speed: 18,
@@ -395,15 +403,11 @@ class Game {
             collisionsWith(this.tokens, (tkn) => {
                 let collectToken = collideDistance(tkn, this.player);
                 if (collectToken && !tkn.collected) {
-                    let points = 1;
+                    tkn.collect(1);
+                    this.setState({ score: this.state.score + 1 });
 
-                    // if jumping add more points
-                    if (this.player.y > this.screen.bottom - this.player.height) {
-                        points ++;
-                    }
-
-                    tkn.collect(points);
-                    this.setState({ score: this.state.score + points });
+                    this.sounds.currentTime = 0;
+                    this.sounds.scoreSound.play();
                 }
 
                 return collectToken;
@@ -426,11 +430,16 @@ class Game {
         if (this.state.current === 'over') {
             this.overlay.setBanner('Game Over Message');
 
-            this.player.draw();
+            this.sounds.backgroundMusic.pause();
+            this.sounds.gameOverSound.play();
         }
 
         // draw the next screen
-        this.requestFrame(() => this.play());
+        if (this.state.current === 'over') {
+            this.cancelFrame();
+        } else {
+            this.requestFrame(() => this.play());
+        }
     }
 
     // event listeners
@@ -464,6 +473,8 @@ class Game {
         if (type === 'keydown') {
             if (code === 'Space') {
                 this.player.jump(this.player.height * 0.40);
+                this.sounds.jumpSound.currentTime = 0;
+                this.sounds.jumpSound.play();
             }
         }
 

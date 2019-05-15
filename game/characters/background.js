@@ -57,7 +57,7 @@ class Background {
 
             let depth = randomBetween(1, 4, 'int');
             let width = 90 * (this.screen.scale / depth);
-            let height = 70 * (this.screen.scale / depth);
+            let height = 60 * (this.screen.scale / depth);
 
             // add a new image
             this.images = [
@@ -80,8 +80,8 @@ class Background {
             // get location somewhere offscreen in x
             // from top to middle of screen
             let depth = randomBetween(2, 4, 'int');
-            let width = 120 * (this.screen.scale / depth);
-            let height = 120 * (this.screen.scale / depth);
+            let width = 650 * (this.screen.scale / depth);
+            let height = 650 * (this.screen.scale / depth);
 
             let spawnLocation = pickLocation({
                 top: this.screen.bottom - height,
@@ -107,21 +107,17 @@ class Background {
         }
 
         // bushes
-        if (frame.count % 20 === 0) {
+        if (frame.count % 60 === 0) {
             // get location somewhere offscreen in x
             // from top to middle of screen
             let depth = randomBetween(2, 4, 'int');
-            let width = 60 * (this.screen.scale / depth);
-            let height = 60 * (this.screen.scale / depth);
-            let floorImage = pickFromList([
-                this.floorImageA,
-                this.floorImageB
-            ]);
+            let width = 150 * (this.screen.scale / depth);
+            let height = 90 * (this.screen.scale / depth);
 
             let spawnLocation = pickLocation({
-                top: this.screen.bottom - height * 0.75,
+                top: this.screen.bottom - height,
                 right: this.screen.right,
-                bottom: this.screen.bottom - height * 0.75,
+                bottom: this.screen.bottom - height,
                 left: this.screen.right
             });
 
@@ -130,7 +126,7 @@ class Background {
                 ...this.images,
                 new ImageSprite({
                     ctx: this.ctx,
-                    image: floorImage,
+                    image: this.floorImageA,
                     x: spawnLocation.x,
                     y: spawnLocation.y,
                     width: width,
@@ -146,13 +142,13 @@ class Background {
             // get location somewhere offscreen in x
             // from top to middle of screen
             let depth = 5;
-            let width = 2000 * (this.screen.scale / depth);
-            let height = 2000 * (this.screen.scale / depth);
+            let width = 3500 * (this.screen.scale / depth);
+            let height = 2500 * (this.screen.scale / depth);
 
             let spawnLocation = pickLocation({
-                top: this.screen.bottom - height * 0.75,
+                top: this.screen.bottom - height,
                 right: this.screen.right,
-                bottom: this.screen.bottom - height * 0.75,
+                bottom: this.screen.bottom - height,
                 left: this.screen.right
             });
 
@@ -189,6 +185,7 @@ class Background {
                 img.x > -img.width :
                 true;
             })
+            .sort((a, b) => a.depth + b.depth)
         ]
 
         // update paralax
