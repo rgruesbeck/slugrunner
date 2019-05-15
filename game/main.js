@@ -89,22 +89,14 @@ class Game {
             touch: { x: 0, y: 0 },
         };
 
-        this.images = {}; // place to keep images
-        this.sounds = {}; // place to keep sounds
-        this.fonts = {}; // place to keep fonts
-
-        this.player = {};
-        this.obstacles = [];
-        this.tokens = [];
-
         // setup event listeners
         // handle keyboard events
         document.addEventListener('keydown', ({ code }) => this.handleKeyboardInput('keydown', code));
         document.addEventListener('keyup', ({ code }) => this.handleKeyboardInput('keyup', code));
 
         // handle taps
-        document.addEventListener('touchstart', () => this.handleJump());
-        document.addEventListener('mousedown', () => this.handleJump());
+        document.addEventListener('touchstart', ({ touches }) => this.handleTap(touches[0]));
+        document.addEventListener('mousedown', (e) => this.handleTap(e));
 
         // handle overlay clicks
         this.overlay.root.addEventListener('click', ({ target }) => this.handleClicks(target));
@@ -125,6 +117,13 @@ class Game {
 
     init() {
         // set 
+        this.images = {}; // place to keep images
+        this.sounds = {}; // place to keep sounds
+        this.fonts = {}; // place to keep fonts
+
+        this.player = {};
+        this.obstacles = [];
+        this.tokens = [];
 
         // set topbar and topbar color
         this.topbar.active = this.config.settings.gameTopBar;
@@ -148,9 +147,10 @@ class Game {
             scale: (this.canvas.width) / 2  * 0.005
         };
 
-        // set state
+        // set fresh state
         this.setState({
-            lives: this.config.settings.lives
+            lives: this.config.settings.lives,
+            score: 0
         });
 
         // set document body to backgroundColor
@@ -466,11 +466,13 @@ class Game {
         // mute
         if (target.id === 'mute') {
             this.mute();
+            return;
         }
 
         // pause
         if (target.id === 'pause') {
             this.pause();
+            return;
         }
 
         // button
@@ -490,6 +492,17 @@ class Game {
 
     }
 
+    // handle taps
+    handleTap(e) {
+        // ignore pause or mute taps
+        if (e.target.id.match(/pause|mute/)) {
+            return;
+        }
+
+        this.handleJump();
+    }
+
+    // handle keyboard
     handleKeyboardInput(type, code) {
         this.input.active = 'keyboard';
 
