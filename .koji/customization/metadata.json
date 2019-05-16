@@ -2,10 +2,10 @@
   "metadata": {
     "title": "Garden Dash",
     "description": "An infinite runner in a sunny garden. Easily customizable at gokoji.com.",
-    "image": "https://images.koji-cdn.com/42915d97-9411-4f16-a41a-226a5e641680/slugrun.png",
-    "icon": "https://images.koji-cdn.com/42915d97-9411-4f16-a41a-226a5e641680/slugrun.png",
-    "icon192": "https://via.placeholder.com/192",
-    "icon512": "https://via.placeholder.com/512",
+    "image": "https://images.koji-cdn.com/template-assets/0114b9d6-50cb-4271-bb83-6e3ff5c138fb_1557959906667.png",
+    "icon": "https://images.koji-cdn.com/template-assets/0114b9d6-50cb-4271-bb83-6e3ff5c138fb_1557959906667.png",
+    "icon192": "https://images.koji-cdn.com/template-assets/0114b9d6-50cb-4271-bb83-6e3ff5c138fb_1557959906667.png?w=192",
+    "icon512": "https://images.koji-cdn.com/template-assets/0114b9d6-50cb-4271-bb83-6e3ff5c138fb_1557959906667.png?w=512",
     "gaCode": ""
   },
   "@@editor": [
