@@ -151,11 +151,11 @@ class Game {
 
         // set fresh state
         this.setState({
-            lives: this.config.settings.lives,
-            score: 0,
-            speed: this.config.settings.speed,
-            gravity: this.config.settings.gravity * 2,
-            jumpPower: this.config.settings.jumpPower
+            lives: parseInt(this.config.settings.lives),
+            score: parseInt(0),
+            speed: parseInt(this.config.settings.speed),
+            gravity: parseInt(this.config.settings.gravity * 2),
+            jumpPower: parseInt(this.config.settings.jumpPower)
         });
 
         // set document body to backgroundColor
