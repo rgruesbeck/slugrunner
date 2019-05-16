@@ -9,7 +9,7 @@
       "lives": 3,
       "speed": 15,
       "gravity": 4,
-      "jumpPower": 6,
+      "jumpPower": 8,
       "fontFamily": "Bungee Inline"
     },
     "@@editor": [
