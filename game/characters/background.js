@@ -22,7 +22,7 @@ import {
 import ImageSprite from '../objects/imageSprite.js';
 
 class Background {
-    constructor({ ctx, screen, x, y, width, height, skyImage, horizonImageA, horizonImageB, floorImage }) {
+    constructor({ ctx, screen, speed, x, y, width, height, skyImage, horizonImageA, horizonImageB, floorImage }) {
         this.ctx = ctx;
 
         this.x = x;
@@ -30,7 +30,7 @@ class Background {
         this.width = width;
         this.height = height;
 
-        this.speed = 16;
+        this.speed = speed;
 
         this.screen = screen;
 
@@ -140,7 +140,6 @@ class Background {
         // get location somewhere offscreen in x
         // from top to middle of screen
         let depth = randomBetween(2, 3, 'int');
-        console.log(depth);
         let width = 150 * (this.screen.scale / depth);
         let height = 90 * (this.screen.scale / depth);
 
@@ -212,7 +211,6 @@ class Background {
 
                 // move image right to left
                 img.move(-1, 0, frame.scale);
-
                 return img;
             })
             .filter(img => {

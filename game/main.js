@@ -78,6 +78,8 @@ class Game {
             prev: '',
             score: 0,
             lives: 0,
+            speed: 0,
+            gravity: 1,
             paused: false,
             muted: localStorage.getItem('game-muted') === 'true'
         };
@@ -150,7 +152,10 @@ class Game {
         // set fresh state
         this.setState({
             lives: this.config.settings.lives,
-            score: 0
+            score: 0,
+            speed: this.config.settings.speed,
+            gravity: this.config.settings.gravity * 2,
+            jumpPower: this.config.settings.jumpPower
         });
 
         // set document body to backgroundColor
@@ -199,7 +204,7 @@ class Game {
     create() {
         // create game characters
 
-        const { scale, left, bottom } = this.screen;
+        const { scale, bottom } = this.screen;
         const { playerImage } = this.images;
 
 
@@ -220,6 +225,7 @@ class Game {
         this.background = new Background({
             ctx: this.ctx,
             screen: this.screen,
+            speed: this.state.speed,
             x: 0,
             y: 0,
             width: this.canvas.width,
@@ -297,7 +303,7 @@ class Game {
 
             // obstacles
             // every 2 seconds, add an obstacle if less than 3 on screen
-            let check = pickFromList([120, 300]);
+            let check = pickFromList([150, 200, 250, 300]);
             if (this.frame.count % check ===  0 && this.obstacles.length < 3) {
                 let width = 45 * this.screen.scale;
                 let height = 35 * this.screen.scale;
@@ -311,7 +317,7 @@ class Game {
                         y: this.screen.bottom - height,
                         width: width,
                         height: height,
-                        speed: 18,
+                        speed: this.state.speed,
                         bounds: padBounds(this.screen)
                     })
                 ]
@@ -350,12 +356,13 @@ class Game {
             let tokenTime = this.frame.count % 20 === 0;
             let tokenWidth = 25 * this.screen.scale;
             let tokenHeight = 25 * this.screen.scale;
+            let avoidPoint = this.obstacles[this.obstacles.length - 1] || { x: 0, y: 0 };
             let tokenLocation = pickLocationAwayFrom({
                 top: this.screen.bottom - tokenHeight * 6,
                 bottom: this.screen.bottom - tokenHeight,
                 right: this.screen.right,
                 left: this.screen.right
-            }, this.obstacles[this.obstacles.length - 1], tokenWidth)
+            }, avoidPoint, tokenWidth)
 
             if (tokenTime && tokenLocation) {
                 let { tokenImageA, tokenImageB } = this.images;
@@ -377,7 +384,7 @@ class Game {
                         y: tokenLocation.y,
                         width: tokenWidth,
                         height: tokenHeight,
-                        speed: 18,
+                        speed: this.state.speed,
                         bounds: padBounds(this.screen),
                         value: token.value
                     })
@@ -415,10 +422,13 @@ class Game {
             })
 
             // player
+            // animate player
             let pulse = Math.cos(this.frame.count / 10) / 4;
             this.player.animate(pulse * this.screen.scale);
+
+            // move player and apply gravity
             this.player.move(0, 0, this.frame.scale);
-            this.player.addForce(0, 1);
+            this.player.addForce(0, this.state.gravity);
             this.player.draw();
 
         }
@@ -452,7 +462,7 @@ class Game {
 
         // jump
         let jump = (this.player.height * 0.75 ) / this.screen.scale;
-        this.player.jump(jump);
+        this.player.jump(jump * this.state.jumpPower);
 
         // play jump sound
         this.sounds.jumpSound.currentTime = 0;
