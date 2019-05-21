@@ -1,6 +1,5 @@
-![Game Artwork](https://i.imgur.com/jcBe9Ef.png)
-
 # Endless Runner
+
 People love endless runner games, and this template makes it easy to create one (or many) of your own.  Easily customize images, sounds, and colors with the Visual Customization Controls (VCC's). Find the right mix and your game(s) could go viral!
 
 ## Visual Customization Controls (VCC's)
