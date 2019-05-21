@@ -1,7 +1,7 @@
 # Endless Runner
 ![Game Artwork](https://i.imgur.com/jcBe9Ef.png)
 
-An infinite runner in a sunny garden. Based off the HTML5 Canvas Game Scaffold.
+An infinite runner based off the HTML5 Canvas Game Scaffold.
 
 ## VCC's
 
@@ -18,7 +18,7 @@ An infinite runner in a sunny garden. Based off the HTML5 Canvas Game Scaffold.
 
 ## Structure
 ### ~/game/
-This directory hold the game code.
+This directory holds the game code.
 - [game/main.js](#~/game/main.js) is where the load, create, and play loop are setup.
 - [game/overlay.js](#~/game/overlay.js) controls the html overlay for displaying game text.
 
