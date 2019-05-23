@@ -3,11 +3,12 @@
       "name": "Garden Dash",
       "startText": "Start",
       "gameoverText": "Game Over",
-      "instructionsMobile": "Tap screen to jump",
-      "instructionsDesktop": "Press SPACE bar to jump",
+      "instructionsMobile": "Tap to JUMP </br> Swipe RIGHT to DASH </br> Swipe LEFT to stop DASH",
+      "instructionsDesktop": "Press SPACE bar to JUMP </br> Hold SHIFT to DASH",
       "gameTopBar": true,
       "lives": 3,
       "speed": 15,
+      "rushSpeed": 25,
       "gravity": 1,
       "jumpPower": 4,
       "fontFamily": "Bungee Inline"
@@ -51,6 +52,10 @@
           {
             "key": "speed",
             "name": "Game Speed"
+          },
+          {
+            "key": "rushSpeed",
+            "name": "Rush Speed"
           },
           {
             "key": "gravity",

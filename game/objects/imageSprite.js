@@ -18,6 +18,8 @@ class ImageSprite extends Sprite {
     constructor(options) {
         super(options);
 
+        this.type = options.type;
+
         this.ctx = options.ctx;
         this.image = options.image;
     }

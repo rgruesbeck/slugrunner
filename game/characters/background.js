@@ -34,12 +34,15 @@ class Background {
 
         this.screen = screen;
 
+        console.log(screen);
+
         this.skyImage = skyImage;
         this.horizonImageA = horizonImageA;
         this.horizonImageB = horizonImageB;
         this.floorImage = floorImage;
 
         this.images = this.freshScene();
+        this.counts = {};
     }
 
     freshScene() {
@@ -47,7 +50,6 @@ class Background {
         return [
             this.createHorizonImageB(false),
             this.createHorizonImageB(false),
-            this.createHorizonImageB(false),
             this.createSkyImage(false),
             this.createSkyImage(false),
             this.createSkyImage(false),
@@ -55,7 +57,15 @@ class Background {
             this.createHorizonImageA(false),
             this.createHorizonImageA(false),
             this.createHorizonImageA(false),
-            this.createHorizonImageA(false)
+            this.createHorizonImageA(false),
+            this.createHorizonImageA(false),
+            this.createHorizonImageA(false),
+            this.createHorizonImageA(false),
+            this.createHorizonImageA(false),
+            this.createFloorImage(false),
+            this.createFloorImage(false),
+            this.createFloorImage(false),
+            this.createFloorImage(false)
         ]
     }
 
@@ -72,19 +82,20 @@ class Background {
         });
 
         let depth = randomBetween(4, 8, 'int');
-        let scale = (this.screen.scale / depth);
 
-        let height = (this.screen.height * 0.30) * scale;
+        let height = (this.screen.height / 2) / depth;
         let width = (height * this.skyImage.width / this.skyImage.height);
 
         return new ImageSprite({
             ctx: this.ctx,
+            type: 'sky',
             image: this.skyImage,
             x: spawnLocation.x,
             y: spawnLocation.y,
             width: width,
             height: height,
             speed: this.speed / depth,
+            depth: depth,
             bounds: padBounds(this.screen)
         });
     }
@@ -95,9 +106,8 @@ class Background {
         // get location somewhere offscreen in x
         // from top to middle of screen
         let depth = randomBetween(2, 3, 'int');
-        let scale = (this.screen.scale / depth);
 
-        let height = (this.screen.height * 0.60) * scale;
+        let height = (this.screen.height) / depth;
         let width = (height * this.horizonImageA.width / this.horizonImageA.height);
 
         let spawnLocation = pickLocation({
@@ -109,12 +119,14 @@ class Background {
 
         return new ImageSprite({
             ctx: this.ctx,
+            type: 'horizonA',
             image: this.horizonImageA,
             x: spawnLocation.x,
             y: spawnLocation.y,
             width: width,
             height: height,
             speed: this.speed / depth,
+            depth: depth,
             bounds: padBounds(this.screen)
         })
     }
@@ -125,9 +137,8 @@ class Background {
         // get location somewhere offscreen in x
         // from top to middle of screen
         let depth = randomBetween(6, 7, 'int');
-        let scale = (this.screen.scale / depth);
 
-        let height = (this.screen.height * 4) * scale;
+        let height = (this.screen.height * 5.5) / depth;
         let width = (height * this.horizonImageB.width / this.horizonImageB.height);
 
         let spawnLocation = pickLocation({
@@ -139,12 +150,14 @@ class Background {
 
         return new ImageSprite({
             ctx: this.ctx,
+            type: 'horizonB',
             image: this.horizonImageB,
             x: spawnLocation.x,
             y: spawnLocation.y,
             width: width,
             height: height,
             speed: this.speed / depth,
+            depth: depth,
             bounds: padBounds(this.screen)
         })
     }
@@ -155,9 +168,8 @@ class Background {
         // get location somewhere offscreen in x
         // from top to middle of screen
         let depth = randomBetween(2, 3, 'int');
-        let scale = (this.screen.scale / depth);
 
-        let height = (this.screen.height * 0.10) * scale;
+        let height = (this.screen.height / 6) / depth;
         let width = (height * this.floorImage.width / this.floorImage.height);
 
         let spawnLocation = pickLocation({
@@ -169,19 +181,21 @@ class Background {
 
         return new ImageSprite({
             ctx: this.ctx,
+            type: 'floor',
             image: this.floorImage,
             x: spawnLocation.x,
             y: spawnLocation.y,
             width: width,
             height: height,
             speed: this.speed / depth,
+            depth: depth,
             bounds: padBounds(this.screen)
         })
     }
 
     update(frame) {
         // every 2 seconds add a sky image (cloud, bird, etc)
-        if (frame.count % 120 === 0) {
+        if (frame.count % 300 === 0 && this.images.filter(i => i.type === 'sky').length < 5) {
 
             // add a new cloud/ sky image
             this.images = [
@@ -191,7 +205,7 @@ class Background {
         }
 
         // trees
-        if (frame.count % 60 === 0) {
+        if (frame.count % 120 === 0 && this.images.filter(i => i.type === 'horizonA').length < 15) {
 
             // add a new tree/horizon image a
             this.images = [
@@ -200,21 +214,21 @@ class Background {
             ]
         }
 
-        // bushes
-        if (frame.count % 60 === 0) {
-            // add a new bush
-            this.images = [
-                ...this.images,
-                this.createFloorImage()
-            ]
-        }
-
         // mountains
-        if (frame.count % 800 === 0) {
+        if (frame.count % 300 === 0 && this.images.filter(i => i.type === 'horizonB').length < 3) {
             // add a new mountain
             this.images = [
                 ...this.images,
                 this.createHorizonImageB()
+            ]
+        }
+
+        // bushes
+        if (frame.count % 120 === 0 && this.images.filter(i => i.type === 'floor').length < 20) {
+            // add a new bush
+            this.images = [
+                ...this.images,
+                this.createFloorImage()
             ]
         }
 
@@ -224,7 +238,11 @@ class Background {
         this.images = [
             ...this.images
             .filter(img => img)
-            .sort((a, b) => a.depth - b.depth)
+            .map(img => {
+                img.speed = this.speed / img.depth;
+                return img;
+            })
+            .sort((a, b) => a.depth + b.depth)
             .map(img => {
 
                 // move image right to left
@@ -237,6 +255,7 @@ class Background {
                 true;
             })
         ]
+
     }
 
     draw() {

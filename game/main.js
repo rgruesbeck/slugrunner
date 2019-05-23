@@ -45,6 +45,10 @@ import {
     pickLocationAwayFrom
 } from './utils/spriteUtils.js';
 
+import {
+    getSwipe
+} from './utils/inputUtils.js';
+
 import Player from './characters/player.js';
 import Background from './characters/background.js';
 import Obstacle from './characters/obstacle.js';
@@ -94,8 +98,12 @@ class Game {
         document.addEventListener('keyup', ({ code }) => this.handleKeyboardInput('keyup', code));
 
         // handle taps
-        document.addEventListener('touchstart', ({ touches }) => this.handleTap(touches[0]));
         document.addEventListener('mousedown', (e) => this.handleTap(e));
+
+        // handle swipes
+        document.addEventListener('touchstart', ({ touches }) => this.handleSwipe('touchstart', touches[0]));
+        document.addEventListener('touchmove', ({ touches }) => this.handleSwipe('touchmove', touches[0]));
+        document.addEventListener('touchend', ({ touches }) => this.handleSwipe('touchend', touches[0]));
 
         // handle overlay clicks
         this.overlay.root.addEventListener('click', ({ target }) => this.handleClicks(target));
@@ -259,6 +267,9 @@ class Game {
         this.overlay.setLives(this.state.lives);
         this.overlay.setScore(this.state.score);
 
+        // update background speed
+        this.background.speed = this.state.speed;
+
         // ready to play
         if (this.state.current === 'ready') {
             this.overlay.hide('loading');
@@ -329,6 +340,10 @@ class Game {
             this.obstacles = [
                 ...this.obstacles
                 .filter(obs => obs.x > -obs.width)
+                .map(obs => {
+                    obs.speed = this.state.speed;
+                    return obs;
+                })
             ];
 
             this.obstacles.forEach(obs => {
@@ -398,6 +413,10 @@ class Game {
 
             this.tokens = [
                 ...this.tokens
+                .map(tkn => {
+                    tkn.speed = this.state.speed;
+                    return tkn;
+                })
                 .filter(tkn => tkn.x > -tkn.width)
                 .filter(tkn => tkn.y > this.player.y - this.player.height || !tkn.collected)
             ];
@@ -460,7 +479,7 @@ class Game {
         }
         
         // return if player already jumped
-        if (this.player.y < this.screen.bottom - this.player.height * 2) {
+        if (this.player.y < this.screen.bottom - this.player.height) {
             return;
         }
 
@@ -470,6 +489,21 @@ class Game {
         // play jump sound
         this.sounds.jumpSound.currentTime = 0;
         this.sounds.jumpSound.play();
+    }
+
+    handleRush(rush) {
+        // only when in play
+        if (this.state.current != 'play') {
+            return;
+        }
+
+        if (rush) {
+
+            this.setState({ speed: parseInt(this.config.settings.rushSpeed) });
+        } else {
+
+            this.setState({ speed: parseInt(this.config.settings.speed) })
+        }
     }
 
     // event listeners
@@ -515,6 +549,18 @@ class Game {
         this.handleJump();
     }
 
+    // handle swipe
+    handleSwipe(type, touch) {
+        getSwipe(type, touch, (swipe) => {
+            if (swipe.direction === 'right') {
+                this.handleRush(true);
+            } else {
+                this.handleRush(false);
+            }
+        })
+
+    }
+
     // handle keyboard
     handleKeyboardInput(type, code) {
         this.input.active = 'keyboard';
@@ -526,6 +572,13 @@ class Game {
 
                 // jump
                 this.handleJump();
+            }
+
+            // start rushing
+            if (code.match(/ShiftRight|ShiftLeft/) && this.state.current === 'play') {
+
+                // rush on
+                this.handleRush(true);
             }
         }
 
@@ -542,6 +595,13 @@ class Game {
 
                 // start play
                 this.setState({ current: 'play' });
+            }
+
+            // stop rushing
+            if (code.match(/ShiftRight|ShiftLeft/) && this.state.current === 'play') {
+
+                // rush off
+                this.handleRush(false);
             }
         }
     }
