@@ -35,16 +35,13 @@ import {
 } from './helpers/assetLoaders.js';
 
 import {
-    randomBetween,
     pickFromList
 } from './utils/baseUtils.js';
 
 import {
-    pickLocation,
     padBounds,
     collisionsWith,
     collideDistance,
-    pickLocationAwayFromList,
     pickLocationAwayFrom
 } from './utils/spriteUtils.js';
 
@@ -146,7 +143,7 @@ class Game {
             centerY: this.canvas.height / 2,
             width: this.canvas.width,
             height: this.canvas.height,
-            scale: (this.canvas.width) / 2  * 0.005
+            scale: (this.canvas.width + this.canvas.height) / 2  * 0.003
         };
 
         // set fresh state
@@ -208,13 +205,17 @@ class Game {
         const { playerImage } = this.images;
 
 
-        let playerHeight = 60 * scale;
-        let playerWidth = 80 * scale;
+        // let playerHeight = (this.screen.height * 0.10) * scale;
+        // let playerWidth = (playerHeight * this.images.playerImage.width / this.images.playerImage.height);
+        // let playerWidth = (this.screen.width * 0.10) * scale;
+        // let playerHeight = (playerWidth * this.images.playerImage.height / this.images.playerImage.width);
+        let playerHeight = 30 * scale;
+        let playerWidth = (playerHeight * this.images.playerImage.width / this.images.playerImage.height);
 
         this.player = new Player({
             ctx: this.ctx,
             image: playerImage,
-            x: this.screen.centerX - playerWidth * 0.75,
+            x: this.screen.centerX / 2 - playerWidth * 0.75,
             y: bottom,
             width: playerWidth,
             height: playerHeight,
@@ -279,7 +280,6 @@ class Game {
             let pulse = Math.cos(this.frame.count / 10) / 4;
             this.player.animate(pulse * this.screen.scale);
             this.player.move(0, 0, this.frame.scale);
-            this.player.addForce(0, 1);
             this.player.draw();
         }
 
@@ -305,8 +305,11 @@ class Game {
             // every 2 seconds, add an obstacle if less than 3 on screen
             let check = pickFromList([150, 200, 250, 300]);
             if (this.frame.count % check ===  0 && this.obstacles.length < 3) {
-                let width = 45 * this.screen.scale;
-                let height = 35 * this.screen.scale;
+
+                // let height = (this.screen.height * 0.075) * this.screen.scale;
+                // let width = (height * this.images.obstacleImage.width / this.images.obstacleImage.height);
+                let height = 25 * this.screen.scale;
+                let width = (height * this.images.playerImage.width / this.images.playerImage.height);
 
                 this.obstacles = [
                     ...this.obstacles,
@@ -352,13 +355,15 @@ class Game {
             }
 
             // tokens
-            // every 2 seconds, add an token if less than 3 on screen
+            // every 2 seconds, add a token if less than 3 on screen
             let tokenTime = this.frame.count % 20 === 0;
-            let tokenWidth = 25 * this.screen.scale;
-            let tokenHeight = 25 * this.screen.scale;
+
+            let tokenHeight = 20 * this.screen.scale;
+            let tokenWidth = (tokenHeight * this.images.tokenImageA.width / this.images.tokenImageA.height);
+
             let avoidPoint = this.obstacles[this.obstacles.length - 1] || { x: 0, y: 0 };
             let tokenLocation = pickLocationAwayFrom({
-                top: this.screen.bottom - tokenHeight * 6,
+                top: this.screen.bottom - tokenHeight,
                 bottom: this.screen.bottom - tokenHeight,
                 right: this.screen.right,
                 left: this.screen.right
@@ -377,11 +382,11 @@ class Game {
                         key: token.key,
                         ctx: this.ctx,
                         image: token.image,
-                        color: this.config.colors.primaryColor,
+                        color: this.config.colors.pointColor,
                         font: this.config.settings.fontFamily,
                         fontSize: tokenWidth,
                         x: tokenLocation.x,
-                        y: tokenLocation.y,
+                        y: this.tokens.length % 2 === 0 ? tokenLocation.y : tokenLocation.y - tokenHeight * 2,
                         width: tokenWidth,
                         height: tokenHeight,
                         speed: this.state.speed,
@@ -414,7 +419,7 @@ class Game {
                     tkn.collect(1);
                     this.setState({ score: this.state.score + 1 });
 
-                    this.sounds.currentTime = 0;
+                    this.sounds.scoreSound.currentTime = 0;
                     this.sounds.scoreSound.play();
                 }
 
@@ -428,7 +433,6 @@ class Game {
 
             // move player and apply gravity
             this.player.move(0, 0, this.frame.scale);
-            this.player.addForce(0, this.state.gravity);
             this.player.draw();
 
         }
@@ -456,13 +460,12 @@ class Game {
         }
         
         // return if player already jumped
-        if (this.player.y < this.screen.bottom - this.player.height) {
+        if (this.player.y < this.screen.bottom - this.player.height * 2) {
             return;
         }
 
         // jump
-        let jump = (this.player.height * 0.75 ) / this.screen.scale;
-        this.player.jump(jump * this.state.jumpPower);
+        this.player.jump(this.state.jumpPower / 10, this.state.gravity / 100);
 
         // play jump sound
         this.sounds.jumpSound.currentTime = 0;

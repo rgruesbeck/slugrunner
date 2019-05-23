@@ -60,6 +60,8 @@ class Background {
     }
 
     createSkyImage(spawned = true) {
+        if (!this.skyImage) { return; }
+
         // get location somewhere offscreen in x
         // from top to middle of screen
         let spawnLocation = pickLocation({
@@ -70,8 +72,11 @@ class Background {
         });
 
         let depth = randomBetween(4, 8, 'int');
-        let width = 250 * (this.screen.scale / depth);
-        let height = 150 * (this.screen.scale / depth);
+        let scale = (this.screen.scale / depth);
+
+        let height = (this.screen.height * 0.30) * scale;
+        let width = (height * this.skyImage.width / this.skyImage.height);
+
         return new ImageSprite({
             ctx: this.ctx,
             image: this.skyImage,
@@ -85,11 +90,15 @@ class Background {
     }
 
     createHorizonImageA(spawned = true) {
+        if (!this.horizonImageA) { return; }
+
         // get location somewhere offscreen in x
         // from top to middle of screen
         let depth = randomBetween(2, 3, 'int');
-        let width = 650 * (this.screen.scale / depth);
-        let height = 650 * (this.screen.scale / depth);
+        let scale = (this.screen.scale / depth);
+
+        let height = (this.screen.height * 0.60) * scale;
+        let width = (height * this.horizonImageA.width / this.horizonImageA.height);
 
         let spawnLocation = pickLocation({
             top: this.screen.bottom - height,
@@ -111,15 +120,19 @@ class Background {
     }
 
     createHorizonImageB(spawned = true) {
+        if (!this.horizonImageB) { return; }
+
         // get location somewhere offscreen in x
         // from top to middle of screen
         let depth = randomBetween(6, 7, 'int');
-        let width = 4600 * (this.screen.scale / depth);
-        let height = 3200 * (this.screen.scale / depth);
+        let scale = (this.screen.scale / depth);
+
+        let height = (this.screen.height * 4) * scale;
+        let width = (height * this.horizonImageB.width / this.horizonImageB.height);
 
         let spawnLocation = pickLocation({
             top: this.screen.bottom - height,
-            right: this.screen.right,
+            right: spawned ? this.screen.right : this.screen.right - width / 2,
             bottom: this.screen.bottom - height,
             left: spawned ? this.screen.right : this.screen.left - width / 2
         });
@@ -137,11 +150,15 @@ class Background {
     }
 
     createFloorImage(spawned = true) {
+        if (!this.floorImage) { return; }
+
         // get location somewhere offscreen in x
         // from top to middle of screen
         let depth = randomBetween(2, 3, 'int');
-        let width = 150 * (this.screen.scale / depth);
-        let height = 90 * (this.screen.scale / depth);
+        let scale = (this.screen.scale / depth);
+
+        let height = (this.screen.height * 0.10) * scale;
+        let width = (height * this.floorImage.width / this.floorImage.height);
 
         let spawnLocation = pickLocation({
             top: this.screen.bottom - height,
@@ -206,6 +223,7 @@ class Background {
         // update positions right to left
         this.images = [
             ...this.images
+            .filter(img => img)
             .sort((a, b) => a.depth - b.depth)
             .map(img => {
 

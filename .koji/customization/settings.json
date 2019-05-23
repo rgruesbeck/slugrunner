@@ -8,8 +8,8 @@
       "gameTopBar": true,
       "lives": 3,
       "speed": 15,
-      "gravity": 4,
-      "jumpPower": 8,
+      "gravity": 1,
+      "jumpPower": 4,
       "fontFamily": "Bungee Inline"
     },
     "@@editor": [

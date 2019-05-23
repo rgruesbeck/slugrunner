@@ -24,6 +24,10 @@ class Player extends ImageSprite {
         this.damage = 0;
         this.damagetime = Date.now();
         this.force = { x: 0, y: 0, g: 1 }
+
+        this.gravity = 1;
+        this.dx = 0;
+        this.dy = 0;
     }
 
     animate(n) {
@@ -32,28 +36,9 @@ class Player extends ImageSprite {
     }
 
     move(x, y, m) {
-        let dx = 0;
-        let dy = 0;
+        this.dy += Number(this.gravity); 
 
-        // force is -y (up)
-        if (this.force.y < 0) {
-            let a = 1 * this.force.g;
-            let upForce = drainTo(a * m, this.force.y, 0);
-
-            dy = dy - upForce.flow;
-            this.setForce({ y: upForce.stock });
-        }
-
-        // force is y (down)
-        if (this.force.y > 0) {
-            let a = 1 * this.force.g;
-            let downForce = drainFrom(a * m, this.force.y, 0);
-
-            dy = dy + downForce.flow;
-            this.setForce({ y: downForce.stock });
-        }
-
-        super.move(x + dx, y + dy, m);
+        super.move(x + this.dx, y + this.dy, m);
     }
 
     draw() {
@@ -69,23 +54,9 @@ class Player extends ImageSprite {
         }
     }
 
-    setForce(force) {
-        this.force = {
-            ...this.force,
-            ...force
-        };
-    }
-
-    addForce(x, y, g = 1) {
-        this.setForce({
-            x: this.force.x + x,
-            y: this.force.y + y,
-            g: g
-        })
-    }
-
-    jump(m) {
-        this.setForce({ y: -m });
+    jump(m, g) {
+        this.gravity = g;
+        this.dy = -m;
     }
 
     addDamage(n) {

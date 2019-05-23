@@ -1,8 +1,9 @@
 {
   "colors": {
-    "textColor": "#965a50",
-    "primaryColor": "#ffcf16",
-    "backgroundColor": "lightblue"
+    "textColor": "#ffcf16",
+    "primaryColor": "#965a50",
+    "pointColor": "#ffeb01",
+    "backgroundColor": "#add8e6"
   },
   "@@editor": [
     {
@@ -20,11 +21,19 @@
         {
           "key": "primaryColor",
           "name": "Primary Color",
+          "description": "Default color for topbar and button",
+          "type": "color"
+        },
+        {
+          "key": "pointColor",
+          "name": "Point Color",
+          "description": "Default color for points",
           "type": "color"
         },
         {
           "key": "backgroundColor",
           "name": "Background color",
+          "description": "Default color for background",
           "type": "color"
         }
       ]

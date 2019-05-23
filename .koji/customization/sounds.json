@@ -2,7 +2,7 @@
   "sounds": {
     "backgroundMusic": "https://objects.koji-cdn.com/42915d97-9411-4f16-a41a-226a5e641680/music.mp3",
     "jumpSound": "https://objects.koji-cdn.com/42915d97-9411-4f16-a41a-226a5e641680/jump.mp3",
-    "scoreSound": "https://objects.koji-cdn.com/42915d97-9411-4f16-a41a-226a5e641680/score.mp3",
+    "scoreSound": "https://objects.koji-cdn.com/3288e7bc-c831-4ea9-84dd-695f6c979610/score1mp3",
     "hitSound": "https://objects.koji-cdn.com/42915d97-9411-4f16-a41a-226a5e641680/hit.mp3",
     "gameOverSound": "https://objects.koji-cdn.com/42915d97-9411-4f16-a41a-226a5e641680/end.mp3"
   },
