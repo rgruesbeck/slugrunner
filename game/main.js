@@ -491,15 +491,15 @@ class Game {
         this.sounds.jumpSound.play();
     }
 
-    handleRush(rush) {
+    handleDash(dash) {
         // only when in play
         if (this.state.current != 'play') {
             return;
         }
 
-        if (rush) {
+        if (dash) {
 
-            this.setState({ speed: parseInt(this.config.settings.rushSpeed) });
+            this.setState({ speed: parseInt(this.config.settings.dashSpeed) });
         } else {
 
             this.setState({ speed: parseInt(this.config.settings.speed) })
@@ -553,9 +553,9 @@ class Game {
     handleSwipe(type, touch) {
         getSwipe(type, touch, (swipe) => {
             if (swipe.direction === 'right') {
-                this.handleRush(true);
+                this.handleDash(true);
             } else {
-                this.handleRush(false);
+                this.handleDash(false);
             }
         })
 
@@ -574,11 +574,11 @@ class Game {
                 this.handleJump();
             }
 
-            // start rushing
+            // start dashing
             if (code.match(/ShiftRight|ShiftLeft/) && this.state.current === 'play') {
 
-                // rush on
-                this.handleRush(true);
+                // dash on
+                this.handleDash(true);
             }
         }
 
@@ -597,11 +597,11 @@ class Game {
                 this.setState({ current: 'play' });
             }
 
-            // stop rushing
+            // stop dashing
             if (code.match(/ShiftRight|ShiftLeft/) && this.state.current === 'play') {
 
-                // rush off
-                this.handleRush(false);
+                // dash off
+                this.handleDash(false);
             }
         }
     }

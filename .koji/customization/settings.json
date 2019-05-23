@@ -8,7 +8,7 @@
       "gameTopBar": true,
       "lives": 3,
       "speed": 15,
-      "rushSpeed": 25,
+      "dashSpeed": 25,
       "gravity": 1,
       "jumpPower": 4,
       "fontFamily": "Bungee Inline"
@@ -54,8 +54,8 @@
             "name": "Game Speed"
           },
           {
-            "key": "rushSpeed",
-            "name": "Rush Speed"
+            "key": "dashSpeed",
+            "name": "Dash Speed"
           },
           {
             "key": "gravity",
