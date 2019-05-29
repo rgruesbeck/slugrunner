@@ -10,7 +10,7 @@
       "speed": 15,
       "dashSpeed": 25,
       "gravity": 1,
-      "jumpPower": 4,
+      "jumpPower": 8,
       "fontFamily": "Bungee Inline"
     },
     "@@editor": [

@@ -114,7 +114,7 @@ class Game {
         
         // handle koji config changes
         Koji.on('change', (scope, key, value) => {
-            console.log('updating configs...', scope, key, value);
+            // console.log('updating configs...', scope, key, value);
             this.config[scope][key] = value;
             this.cancelFrame(this.frame.count - 1);
             this.load();
@@ -490,7 +490,7 @@ class Game {
 
         if (inPlay && !inAir) {
             // jump
-            this.player.jump(this.state.jumpPower / 10, this.state.gravity / this.player.height);
+            this.player.jump(this.state.jumpPower * this.player.height / 1000, this.state.gravity * this.player.height / 7000);
 
             // play jump sound
             this.sounds.jumpSound.currentTime = 0;
