@@ -34,8 +34,6 @@ class Background {
 
         this.screen = screen;
 
-        console.log(screen);
-
         this.skyImage = skyImage;
         this.horizonImageA = horizonImageA;
         this.horizonImageB = horizonImageB;

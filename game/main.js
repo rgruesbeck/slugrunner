@@ -62,7 +62,7 @@ class Game {
         this.topbar = topbar;
 
         this.canvas = canvas; // game screen
-        this.ctx = canvas.getContext("2d"); // game screen context
+        this.ctx = canvas.getContext("2d", { alpha: false }); // game screen context
 
         // frame count, rate, and time
         // this is just a place to keep track of frame rate (not set it)
@@ -98,7 +98,7 @@ class Game {
         document.addEventListener('keyup', ({ code }) => this.handleKeyboardInput('keyup', code));
 
         // handle taps
-        document.addEventListener('mousedown', (e) => this.handleTap(e));
+        document.addEventListener('touchstart', (e) => this.handleTap(e));
 
         // handle swipes
         document.addEventListener('touchstart', ({ touches }) => this.handleSwipe('touchstart', touches[0]));
@@ -484,22 +484,19 @@ class Game {
     }
 
     handleJump() {
-        // only when in play
-        if (this.state.current != 'play') {
-            return;
-        }
-        
-        // return if player already jumped
-        if (this.player.y < this.screen.bottom - this.player.height) {
-            return;
+        // jump conditions
+        let inPlay = this.state.current === 'play';
+        let inAir = this.player.y < this.screen.bottom - this.player.height * 1.20;
+
+        if (inPlay && !inAir) {
+            // jump
+            this.player.jump(this.state.jumpPower / 10, this.state.gravity / this.player.height);
+
+            // play jump sound
+            this.sounds.jumpSound.currentTime = 0;
+            this.sounds.jumpSound.play();
         }
 
-        // jump
-        this.player.jump(this.state.jumpPower / 10, this.state.gravity / this.player.height);
-
-        // play jump sound
-        this.sounds.jumpSound.currentTime = 0;
-        this.sounds.jumpSound.play();
     }
 
     handleDash(dash) {

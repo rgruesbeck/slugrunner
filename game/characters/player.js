@@ -23,7 +23,6 @@ class Player extends ImageSprite {
 
         this.damage = 0;
         this.damagetime = Date.now();
-        this.force = { x: 0, y: 0, g: 1 }
 
         this.gravity = 1;
         this.dx = 0;
@@ -36,7 +35,7 @@ class Player extends ImageSprite {
     }
 
     move(x, y, m) {
-        this.dy += Number(this.gravity); 
+        this.dy += this.gravity; 
 
         super.move(x + this.dx, y + this.dy, m);
     }

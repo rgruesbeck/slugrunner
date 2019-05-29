@@ -37,7 +37,13 @@ class ImageSprite extends Sprite {
         this.ctx.scale(scaleX, 1);
 
         // draw the image to canvas
-        this.ctx.drawImage(this.image, xPosition, this.y, this.width, this.height);
+        // bit-shift each position and size to integers
+        // to avoid asking canvas for sub-pixel rendering
+        this.ctx.drawImage(this.image,
+            xPosition >> 0,
+            this.y >> 0,
+            this.width >> 0,
+            this.height >> 0);
 
         // restore canvas context
         this.ctx.restore();

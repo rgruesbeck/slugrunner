@@ -38,7 +38,14 @@ class Token extends ImageSprite {
             this.ctx.save();
             this.ctx.font = this.font;
             this.ctx.fillStyle = this.color;
-            this.ctx.fillText(this.text, this.x, this.y )
+
+            // draw text: not optimal, would be better to use dom and css
+            // bit-shift each position and size to integers
+            // to avoid asking canvas for sub-pixel rendering
+            this.ctx.fillText(this.text,
+                this.x >> 0,
+                this.y >> 0);
+
         } else {
             super.draw();
         }
