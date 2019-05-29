@@ -213,11 +213,7 @@ class Game {
         const { playerImage } = this.images;
 
 
-        // let playerHeight = (this.screen.height * 0.10) * scale;
-        // let playerWidth = (playerHeight * this.images.playerImage.width / this.images.playerImage.height);
-        // let playerWidth = (this.screen.width * 0.10) * scale;
-        // let playerHeight = (playerWidth * this.images.playerImage.height / this.images.playerImage.width);
-        let playerHeight = 30 * scale;
+        let playerHeight = 45 * scale;
         let playerWidth = (playerHeight * this.images.playerImage.width / this.images.playerImage.height);
 
         this.player = new Player({
@@ -319,7 +315,7 @@ class Game {
 
                 // let height = (this.screen.height * 0.075) * this.screen.scale;
                 // let width = (height * this.images.obstacleImage.width / this.images.obstacleImage.height);
-                let height = 25 * this.screen.scale;
+                let height = 40 * this.screen.scale;
                 let width = (height * this.images.playerImage.width / this.images.playerImage.height);
 
                 this.obstacles = [
@@ -401,7 +397,7 @@ class Game {
                         font: this.config.settings.fontFamily,
                         fontSize: tokenWidth,
                         x: tokenLocation.x,
-                        y: this.tokens.length % 2 === 0 ? tokenLocation.y : tokenLocation.y - tokenHeight * 2,
+                        y: this.tokens.length % 2 === 0 ? tokenLocation.y : tokenLocation.y - tokenHeight * 4,
                         width: tokenWidth,
                         height: tokenHeight,
                         speed: this.state.speed,
@@ -432,18 +428,33 @@ class Game {
             });
 
             // check token collisions and collect token
-            collisionsWith(this.tokens, (tkn) => {
-                let collectToken = collideDistance(tkn, this.player);
-                if (collectToken && !tkn.collected) {
-                    tkn.collect(1);
-                    this.setState({ score: this.state.score + 1 });
+            let collectedToken = null;
+            let collecting = collisionsWith(this.tokens, (token) => {
+                // token is already collected
+                if (token.collected) { return false; };
 
-                    this.sounds.scoreSound.currentTime = 0;
-                    this.sounds.scoreSound.play();
+                // token is not yet collected
+                let collect = collideDistance(token, this.player);
+                if (collect) {
+                    // set collected token
+                    collectedToken = token;
+
+                    // flag a collision
+                    return true;
+                } else {
+
+                    // flag a non collision
+                    return false;
                 }
+            });
 
-                return collectToken;
-            })
+            if (collecting && collectedToken) {
+                collectedToken.collect(1);
+                this.setState({ score: this.state.score + 1 });
+
+                this.sounds.scoreSound.currentTime = 0;
+                this.sounds.scoreSound.play();
+            }
 
             // player
             // animate player
@@ -484,7 +495,7 @@ class Game {
         }
 
         // jump
-        this.player.jump(this.state.jumpPower / 10, this.state.gravity / 100);
+        this.player.jump(this.state.jumpPower / 10, this.state.gravity / this.player.height);
 
         // play jump sound
         this.sounds.jumpSound.currentTime = 0;

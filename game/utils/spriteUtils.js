@@ -110,19 +110,17 @@ const collideDistance = (a, b) => {
 // find a collision with entities in a list
 const collisionsWithList = (entList, fn) => {
     return entList
-        .find((ent) => {
+        .some((ent) => {
             return fn(ent);
-        }) ?
-        true : false;
+        });
 }
 
 // find a collision with entities in an object
 const collisionsWithObject = (entObject, fn) => {
     return Object.entries(entObject)
-        .find((ent) => {
+        .some((ent) => {
             return fn(ent);
-        }) ?
-        true : false;
+        });
 }
 
 // collides with many
