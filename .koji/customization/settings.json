@@ -1,6 +1,6 @@
 {
     "settings": {
-      "name": "Garden Dash",
+      "name": "Runner",
       "startText": "Start",
       "gameoverText": "Game Over",
       "instructionsMobile": "Tap to JUMP </br> Swipe RIGHT to DASH </br> Swipe LEFT to stop DASH",

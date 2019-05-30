@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "title": "Garden Dash",
-    "description": "An infinite runner in a sunny garden. Easily customizable at gokoji.com.",
-    "image": "https://images.koji-cdn.com/template-assets/05ca497d-c380-47f9-9408-5df27d9b3a64_1558731957973.png",
-    "icon": "https://images.koji-cdn.com/template-assets/05ca497d-c380-47f9-9408-5df27d9b3a64_1558731957973.png",
-    "icon192": "https://images.koji-cdn.com/template-assets/05ca497d-c380-47f9-9408-5df27d9b3a64_1558731957973.png?fit=clamp&w=192&h=192",
-    "icon512": "https://images.koji-cdn.com/template-assets/05ca497d-c380-47f9-9408-5df27d9b3a64_1558731957973.png?fit=clamp&w=512&h=512",
+    "title": "Runner",
+    "description": "An infinite runner. Easily customizable at gokoji.com.",
+    "image": "https://images.koji-cdn.com/template-assets/1b26c7fb-5a89-469f-bab1-afac21f8a328_1559178936521.png",
+    "icon": "https://images.koji-cdn.com/template-assets/1b26c7fb-5a89-469f-bab1-afac21f8a328_1559178936521.png",
+    "icon192": "https://images.koji-cdn.com/template-assets/1b26c7fb-5a89-469f-bab1-afac21f8a328_1559178936521.png?fit=clamp&w=192&h=192",
+    "icon512": "https://images.koji-cdn.com/template-assets/1b26c7fb-5a89-469f-bab1-afac21f8a328_1559178936521.png?fit=clamp&w=512&h=512",
     "gaCode": ""
   },
   "@@editor": [
