@@ -111,7 +111,7 @@ class Game {
         });
         document.addEventListener('click', (e) => {
             // print click delay
-            this.clickdelay.textContent = `Test Delay: ${Date.now() - this.lastTouch} ms`;
+            this.clickdelay.textContent = `Click Delay: ${Date.now() - this.lastTouch} ms`;
         });
 
 
@@ -518,7 +518,7 @@ class Game {
             this.sounds.jumpSound.play();
 
             // print click delay
-            this.jumpdelay.textContent = `Test Delay: ${Date.now() - this.lastTouch} ms`;
+            this.jumpdelay.textContent = `Jump Delay: ${Date.now() - this.lastTouch} ms`;
         }
 
     }
