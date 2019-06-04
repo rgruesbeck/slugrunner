@@ -100,6 +100,21 @@ class Game {
         // handle taps
         document.addEventListener('touchstart', (e) => this.handleTap(e));
 
+
+        // setup
+        // tests for touch delay
+        this.lastTouch = Date.now();
+        this.clickdelay = document.getElementById('clickdelay');
+        this.jumpdelay = document.getElementById('jumpdelay');
+        document.addEventListener('touchstart', (e) => {
+            this.lastTouch = Date.now();
+        });
+        document.addEventListener('click', (e) => {
+            // print click delay
+            this.clickdelay.textContent = `Test Delay: ${Date.now() - this.lastTouch} ms`;
+        });
+
+
         // handle swipes
         document.addEventListener('touchstart', ({ touches }) => this.handleSwipe('touchstart', touches[0]));
         document.addEventListener('touchmove', ({ touches }) => this.handleSwipe('touchmove', touches[0]));
@@ -257,7 +272,7 @@ class Game {
 
         // draw and do stuff that you need to do
         // no matter the game state
-        this.background.draw();
+        // this.background.draw();
 
         // update score and lives
         this.overlay.setLives(this.state.lives);
@@ -298,7 +313,7 @@ class Game {
             }
 
             // update background
-            this.background.update(this.frame);
+            // this.background.update(this.frame);
 
             // if last state was 'ready'
             // hide overlay items
@@ -307,6 +322,8 @@ class Game {
             }
 
             if (!this.state.muted) { this.sounds.backgroundMusic.play(); }
+
+            /*
 
             // obstacles
             // every 2 seconds, add an obstacle if less than 3 on screen
@@ -456,10 +473,12 @@ class Game {
                 this.sounds.scoreSound.play();
             }
 
+            */
+
             // player
             // animate player
-            let pulse = Math.cos(this.frame.count / 10) / 4;
-            this.player.animate(pulse * this.screen.scale);
+            // let pulse = Math.cos(this.frame.count / 10) / 4;
+            // this.player.animate(pulse * this.screen.scale);
 
             // move player and apply gravity
             this.player.move(0, 0, this.frame.scale);
@@ -488,13 +507,18 @@ class Game {
         let inPlay = this.state.current === 'play';
         let inAir = this.player.y < this.screen.bottom - this.player.height * 1.20;
 
+
         if (inPlay && !inAir) {
+
             // jump
             this.player.jump(this.state.jumpPower * this.player.height / 1000, this.state.gravity * this.player.height / 7000);
 
             // play jump sound
             this.sounds.jumpSound.currentTime = 0;
             this.sounds.jumpSound.play();
+
+            // print click delay
+            this.jumpdelay.textContent = `Test Delay: ${Date.now() - this.lastTouch} ms`;
         }
 
     }
